@@ -44,10 +44,9 @@ export function DemoNoticeModal() {
           </h2>
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
-          Reports submitted here are stored temporarily to show how the
-          workflow works. This information may not last long and could be
-          cleared at any time — please don&apos;t submit real student names or
-          personal data.
+          Reports submitted here are stored for about 24 hours to show how the
+          workflow works, then automatically deleted — please don&apos;t
+          submit real student names or personal data.
         </p>
         <button
           onClick={dismiss}
