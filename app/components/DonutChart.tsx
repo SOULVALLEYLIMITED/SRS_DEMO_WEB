@@ -19,7 +19,7 @@ export function DonutChart({
   return (
     <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
       <svg viewBox="0 0 200 200" className="h-40 w-40 shrink-0" role="img" aria-label={`${centerLabel}: ${total}`}>
-        <circle cx="100" cy="100" r={radius} fill="none" stroke="#e1e0d9" strokeWidth="24" />
+        <circle cx="100" cy="100" r={radius} fill="none" stroke="var(--chart-grid)" strokeWidth="24" />
         {total > 0 &&
           data
             .filter((d) => d.value > 0)
@@ -54,12 +54,12 @@ export function DonutChart({
           textAnchor="middle"
           fontSize="30"
           fontWeight="700"
-          fill="#0b0b0b"
+          fill="var(--chart-text-primary)"
           className="font-numeric"
         >
           {total}
         </text>
-        <text x="100" y="118" textAnchor="middle" fontSize="12" fill="#898781">
+        <text x="100" y="118" textAnchor="middle" fontSize="12" fill="var(--chart-muted)">
           {centerLabel}
         </text>
       </svg>
@@ -67,7 +67,7 @@ export function DonutChart({
       <ul className="w-full space-y-2">
         {data.map((d, i) => (
           <li key={i} className="flex items-center justify-between gap-3 text-sm">
-            <span className="flex items-center gap-2 text-[#52514e]">
+            <span className="text-[color:var(--chart-text-secondary)] flex items-center gap-2">
               <span
                 className="h-2.5 w-2.5 shrink-0 rounded-full"
                 style={{ backgroundColor: d.color }}
@@ -75,9 +75,9 @@ export function DonutChart({
               />
               {d.label}
             </span>
-            <span className="font-numeric font-medium text-[#0b0b0b]">
+            <span className="font-numeric text-[color:var(--chart-text-primary)] font-medium">
               {d.value}
-              <span className="ml-1 text-xs text-[#898781]">
+              <span className="text-[color:var(--chart-muted)] ml-1 text-xs">
                 ({total > 0 ? Math.round((d.value / total) * 100) : 0}%)
               </span>
             </span>

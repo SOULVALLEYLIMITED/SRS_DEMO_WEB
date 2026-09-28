@@ -52,3 +52,9 @@ export interface NewReportInput {
   reportText: string;
   sourceFileName?: string;
 }
+
+export interface ChatTurnResult {
+  reply: string;
+  readyToGenerate: boolean;
+  previewTable?: ResultTable;
+}

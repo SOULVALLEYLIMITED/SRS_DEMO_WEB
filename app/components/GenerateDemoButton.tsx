@@ -24,7 +24,7 @@ export function GenerateDemoButton({ count, label }: { count: number; label: str
     <button
       onClick={handleClick}
       disabled={loading}
-      className="rounded-lg border border-violet-300 bg-white px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-60"
+      className="rounded-lg border border-violet-300 bg-white px-4 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-violet-800 dark:bg-slate-900 dark:text-violet-300 dark:hover:bg-slate-800"
     >
       {loading ? "Generating…" : label}
     </button>

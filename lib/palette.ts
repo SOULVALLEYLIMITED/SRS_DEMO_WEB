@@ -1,17 +1,18 @@
 // Validated categorical order (fixed, never cycled) — see the dataviz skill's
-// reference palette. Status colors are separate and reserved.
+// reference palette. Values reference CSS custom properties (defined in
+// globals.css) so charts pick up the dark-mode-validated steps automatically
+// via @media (prefers-color-scheme: dark), instead of a separate JS palette.
 export const CATEGORICAL = [
-  "#2a78d6", // blue
-  "#eb6834", // orange
-  "#1baf7a", // aqua
-  "#eda100", // yellow
-  "#e87ba4", // magenta
-  "#4a3aa7", // violet
+  "var(--chart-cat-1)", // blue
+  "var(--chart-cat-2)", // orange
+  "var(--chart-cat-3)", // aqua
+  "var(--chart-cat-4)", // yellow
+  "var(--chart-cat-5)", // magenta
 ] as const;
 
-export const OTHER_COLOR = "#c3c2b7"; // neutral — "Other" never gets a generated hue
+export const OTHER_COLOR = "var(--chart-other)"; // neutral — "Other" never gets a generated hue
 
 export const STATUS_COLOR = {
-  good: "#0ca30c",
-  warning: "#fab219",
+  good: "var(--chart-good)",
+  warning: "var(--chart-warning)",
 } as const;

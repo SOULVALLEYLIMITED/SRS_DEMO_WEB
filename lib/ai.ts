@@ -2,6 +2,39 @@ import type { ExtractedMeta, NewReportInput, ResultTable, StructuredResult } fro
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+export async function callGroqJSON(
+  systemPrompt: string,
+  userPrompt: string
+): Promise<unknown> {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error("No GROQ_API_KEY configured");
+
+  const res = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: process.env.GROQ_MODEL || "openai/gpt-oss-120b",
+      temperature: 0,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+    }),
+  });
+
+  if (!res.ok) throw new Error(`Groq API error ${res.status}`);
+
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error("Empty AI response");
+
+  return JSON.parse(content);
+}
+
 const SYSTEM_PROMPT = `You are the AI step in a school workflow demo. A teacher submits a plain-language report through a chat box — this could be a lesson report, a general teacher report, a holiday/term-break report, or another kind of report about their class or work. They do NOT fill in any form fields; they just write naturally, the way they'd describe it to a colleague. Your job is to (1) extract the class, subject, date, and teacher name if they are mentioned or clearly implied, and (2) extract, organize, summarize, and highlight the report's content so a headmaster/principal can understand it at a glance.
 
 Rules:
@@ -61,7 +94,7 @@ function buildDefaultTable(structured: Omit<StructuredResult, "table">): ResultT
   };
 }
 
-function isValidTable(table: unknown): table is ResultTable {
+export function isValidTable(table: unknown): table is ResultTable {
   if (!table || typeof table !== "object") return false;
   const t = table as ResultTable;
   return (
@@ -136,7 +169,7 @@ function extractMetaHeuristic(text: string): ExtractedMeta {
   });
 }
 
-function heuristicStructure(input: NewReportInput): StructuredResult {
+export function heuristicStructure(input: NewReportInput): StructuredResult {
   const text = input.reportText;
   const sentences = text
     .split(/(?<=[.!?])\s+/)
@@ -215,32 +248,7 @@ export async function structureReport(input: NewReportInput): Promise<{
   }
 
   try {
-    const res = await fetch(GROQ_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || "openai/gpt-oss-120b",
-        temperature: 0,
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: buildUserPrompt(input) },
-        ],
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error(`Groq API error ${res.status}`);
-    }
-
-    const data = await res.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) throw new Error("Empty AI response");
-
-    const parsed = JSON.parse(content) as StructuredResult & {
+    const parsed = (await callGroqJSON(SYSTEM_PROMPT, buildUserPrompt(input))) as StructuredResult & {
       meta?: Partial<ExtractedMeta>;
     };
 

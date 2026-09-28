@@ -10,7 +10,7 @@ export function StatTile({
   sublabel?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-center gap-2">
         {accent && (
           <span
@@ -19,12 +19,16 @@ export function StatTile({
             aria-hidden
           />
         )}
-        <p className="text-xs font-medium uppercase tracking-wide text-[#898781]">
+        <p className="text-[color:var(--chart-muted)] text-xs font-medium uppercase tracking-wide">
           {label}
         </p>
       </div>
-      <p className="font-numeric mt-2 text-3xl font-bold text-[#0b0b0b]">{value}</p>
-      {sublabel && <p className="mt-1 text-xs text-[#52514e]">{sublabel}</p>}
+      <p className="font-numeric text-[color:var(--chart-text-primary)] mt-2 text-3xl font-bold">
+        {value}
+      </p>
+      {sublabel && (
+        <p className="text-[color:var(--chart-text-secondary)] mt-1 text-xs">{sublabel}</p>
+      )}
     </div>
   );
 }

@@ -6,8 +6,8 @@ export function StatusBadge({ status }: { status: LessonStatus }) {
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
         isAttention
-          ? "bg-amber-100 text-amber-800"
-          : "bg-emerald-100 text-emerald-800"
+          ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+          : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
       }`}
     >
       <span

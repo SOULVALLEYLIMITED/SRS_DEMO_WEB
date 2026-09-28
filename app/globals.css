@@ -3,6 +3,20 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+
+  --chart-surface: #fcfcfb;
+  --chart-text-primary: #0b0b0b;
+  --chart-text-secondary: #52514e;
+  --chart-muted: #898781;
+  --chart-grid: #e1e0d9;
+  --chart-cat-1: #2a78d6;
+  --chart-cat-2: #eb6834;
+  --chart-cat-3: #1baf7a;
+  --chart-cat-4: #eda100;
+  --chart-cat-5: #e87ba4;
+  --chart-other: #c3c2b7;
+  --chart-good: #0ca30c;
+  --chart-warning: #fab219;
 }
 
 @theme inline {
@@ -10,6 +24,24 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-poppins);
   --font-numeric: var(--font-orbitron);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0c;
+    --foreground: #e5e7eb;
+
+    --chart-surface: #1a1a19;
+    --chart-text-primary: #ffffff;
+    --chart-text-secondary: #c3c2b7;
+    --chart-grid: #2c2c2a;
+    --chart-cat-1: #3987e5;
+    --chart-cat-2: #d95926;
+    --chart-cat-3: #199e70;
+    --chart-cat-4: #c98500;
+    --chart-cat-5: #d55181;
+    --chart-other: #52514e;
+  }
 }
 
 body {
