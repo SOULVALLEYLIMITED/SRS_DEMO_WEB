@@ -25,12 +25,26 @@ export const metadata: Metadata = {
     "Soul Valley's SRS (School Report System) demo — turning a teacher's report into structured information for school leadership.",
 };
 
+const THEME_BOOTSTRAP_SCRIPT = `
+(function () {
+  try {
+    var stored = localStorage.getItem("srs-theme");
+    var isDark = stored === "dark" || (stored !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.classList.add(isDark ? "dark" : "light");
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${poppins.variable} ${orbitron.variable} h-full antialiased`}
     >
+      <head>
+        {/* Applies the saved/OS theme before first paint, to avoid a flash of the wrong theme. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
         {children}
       </body>

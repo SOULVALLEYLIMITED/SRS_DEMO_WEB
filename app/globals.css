@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #f8fafc;
@@ -26,8 +27,11 @@
   --font-numeric: var(--font-orbitron);
 }
 
+/* OS preference, used only before the toggle script has set an explicit
+   class (first paint / JS disabled). Once .light or .dark is set on <html>,
+   that wins regardless of OS preference. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light):not(.dark) {
     --background: #0a0a0c;
     --foreground: #e5e7eb;
 
@@ -42,6 +46,22 @@
     --chart-cat-5: #d55181;
     --chart-other: #52514e;
   }
+}
+
+.dark {
+  --background: #0a0a0c;
+  --foreground: #e5e7eb;
+
+  --chart-surface: #1a1a19;
+  --chart-text-primary: #ffffff;
+  --chart-text-secondary: #c3c2b7;
+  --chart-grid: #2c2c2a;
+  --chart-cat-1: #3987e5;
+  --chart-cat-2: #d95926;
+  --chart-cat-3: #199e70;
+  --chart-cat-4: #c98500;
+  --chart-cat-5: #d55181;
+  --chart-other: #52514e;
 }
 
 body {

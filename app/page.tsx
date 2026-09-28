@@ -1,18 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-gradient-to-b from-violet-50 via-white to-white dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
       <header className="border-b border-slate-200 bg-white/70 backdrop-blur dark:border-slate-800 dark:bg-slate-950/70">
-        <div className="mx-auto flex max-w-5xl items-center gap-2 px-6 py-4">
-          <Image src="/logo.png" alt="SRS logo" width={32} height={32} className="h-8 w-8" />
-          <span className="font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-            Soul Valley
-          </span>
-          <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-            SRS
-          </span>
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-6 py-4">
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="SRS logo" width={32} height={32} className="h-8 w-8" />
+            <span className="font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              Soul Valley
+            </span>
+            <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-semibold text-violet-700 dark:bg-violet-950 dark:text-violet-300">
+              SRS
+            </span>
+          </div>
+          <ThemeToggle />
         </div>
       </header>
 

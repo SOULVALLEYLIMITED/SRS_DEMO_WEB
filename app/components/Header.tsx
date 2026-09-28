@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Header({ active }: { active?: "teacher" | "headmaster" }) {
   return (
@@ -38,6 +39,7 @@ export function Header({ active }: { active?: "teacher" | "headmaster" }) {
           >
             Headmaster
           </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
