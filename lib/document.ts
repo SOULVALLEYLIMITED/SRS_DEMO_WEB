@@ -20,16 +20,6 @@ const MARGIN_DXA = 1080;
 const TABLE_WIDTH_DXA = PAGE_WIDTH_DXA - MARGIN_DXA * 2;
 const COL_WIDTHS = [Math.round(TABLE_WIDTH_DXA * 0.3), Math.round(TABLE_WIDTH_DXA * 0.7)];
 
-function metaLine(label: string, value: string): Paragraph {
-  return new Paragraph({
-    spacing: { after: 60 },
-    children: [
-      new TextRun({ text: `${label}: `, bold: true }),
-      new TextRun({ text: value }),
-    ],
-  });
-}
-
 function headerCell(text: string): TableCell {
   return new TableCell({
     width: { size: COL_WIDTHS[0], type: WidthType.DXA },
@@ -39,36 +29,66 @@ function headerCell(text: string): TableCell {
   });
 }
 
-function bodyCell(text: string, width: number): TableCell {
+function bodyCell(text: string, width: number, bold = false): TableCell {
   return new TableCell({
     width: { size: width, type: WidthType.DXA },
     margins: { top: 100, bottom: 100, left: 120, right: 120 },
-    children: [new Paragraph({ children: [new TextRun({ text })] })],
+    children: [new Paragraph({ children: [new TextRun({ text, bold })] })],
+  });
+}
+
+function buildTable(columns: string[], rows: string[][]): Table {
+  return new Table({
+    width: { size: TABLE_WIDTH_DXA, type: WidthType.DXA },
+    columnWidths: COL_WIDTHS,
+    rows: [
+      new TableRow({ tableHeader: true, children: columns.map((c) => headerCell(c)) }),
+      ...rows.map(
+        (row) =>
+          new TableRow({
+            children: row.map((cell, i) => bodyCell(cell, COL_WIDTHS[i] ?? COL_WIDTHS[1], i === 0)),
+          })
+      ),
+    ],
+  });
+}
+
+function heading(text: string): Paragraph {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_2,
+    spacing: { before: 300, after: 150 },
+    children: [new TextRun({ text })],
   });
 }
 
 export async function buildReportDocx(report: TeacherReport): Promise<Buffer> {
   const { structured } = report;
 
-  const tableRows = [
-    new TableRow({
-      tableHeader: true,
-      children: structured.table.columns.map((col) => headerCell(col)),
-    }),
-    ...structured.table.rows.map(
-      (row) =>
-        new TableRow({
-          children: row.map((cell, i) => bodyCell(cell, COL_WIDTHS[i] ?? COL_WIDTHS[1])),
-        })
-    ),
-  ];
+  const detailsTable = buildTable(
+    ["Detail", "Value"],
+    [
+      ["Report Type", report.reportType],
+      ["Class", report.className],
+      ["Subject", report.subject],
+      ["Date", report.date],
+      ["Submitted By", report.teacherName],
+      ["Status", structured.status],
+      ["Submitted On", new Date(report.submittedAt).toLocaleString()],
+    ]
+  );
 
-  const reportParagraphs = report.reportText
+  const summaryTable = buildTable(structured.table.columns, structured.table.rows);
+
+  const originalParagraphs = report.reportText
     .split(/\n+/)
     .filter((line) => line.trim().length > 0)
     .map(
       (line) =>
-        new Paragraph({ spacing: { after: 120 }, children: [new TextRun({ text: line })] })
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 100 },
+          children: [new TextRun({ text: line })],
+        })
     );
 
   const doc = new Document({
@@ -96,29 +116,15 @@ export async function buildReportDocx(report: TeacherReport): Promise<Buffer> {
             ],
           }),
 
-          metaLine("Teacher", report.teacherName),
-          metaLine("Date", report.date),
-          metaLine("Lesson Status", structured.status),
-          metaLine("Submitted", new Date(report.submittedAt).toLocaleString()),
+          heading("Report Details"),
+          detailsTable,
 
-          new Paragraph({
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 300, after: 150 },
-            children: [new TextRun({ text: "AI-Structured Summary" })],
-          }),
-          new Table({
-            width: { size: TABLE_WIDTH_DXA, type: WidthType.DXA },
-            columnWidths: COL_WIDTHS,
-            rows: tableRows,
-          }),
+          heading("Structured Summary"),
+          summaryTable,
 
-          new Paragraph({
-            heading: HeadingLevel.HEADING_2,
-            spacing: { before: 300, after: 150 },
-            children: [new TextRun({ text: "Original Teacher Report" })],
-          }),
-          ...(reportParagraphs.length
-            ? reportParagraphs
+          heading("Original Submission"),
+          ...(originalParagraphs.length
+            ? originalParagraphs
             : [new Paragraph({ children: [new TextRun({ text: report.reportText })] })]),
 
           new Paragraph({
@@ -135,8 +141,8 @@ export async function buildReportDocx(report: TeacherReport): Promise<Buffer> {
               new TextRun({
                 text:
                   report.source === "ai"
-                    ? "Structured by AI from the teacher's original report. The original report above is the source of record."
-                    : "Structured automatically from the teacher's original report. The original report above is the source of record.",
+                    ? "This summary was generated by AI from the original submission above, which remains the source of record."
+                    : "This summary was generated automatically from the original submission above, which remains the source of record.",
                 italics: true,
                 size: 18,
                 color: "64748B",

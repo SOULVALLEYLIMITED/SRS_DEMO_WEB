@@ -1,37 +1,37 @@
-import { promises as fs } from "fs";
-import path from "path";
 import type { TeacherReport } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATA_FILE = path.join(DATA_DIR, "reports.json");
+// Vercel's (and most serverless platforms') filesystem is read-only outside
+// /tmp and isn't shared across function invocations, so the file-based store
+// only works for local development. When Vercel KV / Upstash Redis REST
+// credentials are present (set them in the Vercel dashboard under
+// Storage -> Create Database -> KV, which auto-injects KV_REST_API_URL /
+// KV_REST_API_TOKEN), reports persist there instead.
+const hasRedisConfig = Boolean(
+  (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL) &&
+    (process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN)
+);
 
-async function ensureStore(): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  try {
-    await fs.access(DATA_FILE);
-  } catch {
-    await fs.writeFile(DATA_FILE, "[]", "utf-8");
-  }
+type Store = {
+  getReports(): Promise<TeacherReport[]>;
+  getReportById(id: string): Promise<TeacherReport | undefined>;
+  addReport(report: TeacherReport): Promise<void>;
+};
+
+async function loadStore(): Promise<Store> {
+  return hasRedisConfig ? import("./store.redis") : import("./store.local");
 }
 
 export async function getReports(): Promise<TeacherReport[]> {
-  await ensureStore();
-  const raw = await fs.readFile(DATA_FILE, "utf-8");
-  const reports: TeacherReport[] = JSON.parse(raw);
-  return reports.sort(
-    (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
-  );
+  const store = await loadStore();
+  return store.getReports();
 }
 
 export async function getReportById(id: string): Promise<TeacherReport | undefined> {
-  const reports = await getReports();
-  return reports.find((r) => r.id === id);
+  const store = await loadStore();
+  return store.getReportById(id);
 }
 
 export async function addReport(report: TeacherReport): Promise<void> {
-  await ensureStore();
-  const raw = await fs.readFile(DATA_FILE, "utf-8");
-  const reports: TeacherReport[] = JSON.parse(raw);
-  reports.push(report);
-  await fs.writeFile(DATA_FILE, JSON.stringify(reports, null, 2), "utf-8");
+  const store = await loadStore();
+  return store.addReport(report);
 }
