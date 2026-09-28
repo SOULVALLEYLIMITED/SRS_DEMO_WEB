@@ -1,4 +1,4 @@
-import { Redis } from "@upstash/redis";
+import Redis from "ioredis";
 import type { TeacherReport } from "./types";
 
 // A Redis Hash — id -> JSON report — rather than one big JSON blob, so
@@ -6,21 +6,24 @@ import type { TeacherReport } from "./types";
 // whole collection (which would race under concurrent submissions).
 const KEY = "srs:reports";
 
-function getClient(): Redis {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+let client: Redis | undefined;
 
-  if (!url || !token) {
-    throw new Error("Redis store used without KV/Upstash REST credentials configured.");
+function getClient(): Redis {
+  const url = process.env.REDIS_URL;
+  if (!url) {
+    throw new Error("Redis store used without REDIS_URL configured.");
   }
 
-  return new Redis({ url, token });
+  // Reused across invocations on a warm serverless instance instead of
+  // reconnecting on every request.
+  client ??= new Redis(url, { maxRetriesPerRequest: 3 });
+  return client;
 }
 
 export async function getReports(): Promise<TeacherReport[]> {
   const redis = getClient();
-  const all = await redis.hgetall<Record<string, TeacherReport>>(KEY);
-  const reports = Object.values(all ?? {});
+  const all = await redis.hgetall(KEY);
+  const reports = Object.values(all).map((json) => JSON.parse(json) as TeacherReport);
   return reports.sort(
     (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
   );
@@ -28,11 +31,11 @@ export async function getReports(): Promise<TeacherReport[]> {
 
 export async function getReportById(id: string): Promise<TeacherReport | undefined> {
   const redis = getClient();
-  const report = await redis.hget<TeacherReport>(KEY, id);
-  return report ?? undefined;
+  const json = await redis.hget(KEY, id);
+  return json ? (JSON.parse(json) as TeacherReport) : undefined;
 }
 
 export async function addReport(report: TeacherReport): Promise<void> {
   const redis = getClient();
-  await redis.hset(KEY, { [report.id]: report });
+  await redis.hset(KEY, report.id, JSON.stringify(report));
 }

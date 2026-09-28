@@ -24,7 +24,7 @@ and as a downloadable Word document.
 | AI | [Groq](https://groq.com) (`openai/gpt-oss-120b`), with a rule-based fallback |
 | Document parsing | `mammoth` (`.docx`), `unpdf` (`.pdf`) |
 | Document generation | `docx` |
-| Storage | Upstash Redis / Vercel KV (production); local JSON file (development) |
+| Storage | Redis via `ioredis` — any standard provider (production); local JSON file (development) |
 
 ## Setup
 
@@ -57,34 +57,34 @@ and as a downloadable Word document.
 |---|---|---|
 | `GROQ_API_KEY` | No | Enables AI structuring and chat replies. Without it, a rule-based extractor is used instead. |
 | `GROQ_MODEL` | No | Defaults to `openai/gpt-oss-120b`. |
-| `KV_REST_API_URL` + `KV_REST_API_TOKEN` | No¹ | Vercel KV (Upstash) REST credentials, for persistent storage in production. |
-| `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` | No¹ | Equivalent, for a self-managed Upstash Redis database. |
+| `REDIS_URL` | No¹ | Standard Redis connection string (`redis://` or `rediss://`), for persistent storage in production. |
 
-¹ Without either pair set, the app falls back to a local JSON file
-(`data/reports.json`). That works for local development only — see
-[Storage](#storage).
+¹ Without it, the app falls back to a local JSON file (`data/reports.json`).
+That works for local development only — see [Storage](#storage).
 
 ## Storage
 
 | Environment | Backend | Notes |
 |---|---|---|
 | Local development | `data/reports.json` | No setup required. |
-| Production (Vercel or similar) | Upstash Redis (via `@upstash/redis`) | Required — see below. |
+| Production (Vercel or similar) | Redis (via `ioredis`) | Required — see below. |
 
 Most serverless platforms, including Vercel, run each request on an ephemeral,
 read-only filesystem, so the local JSON file cannot persist reports in
 production.
 
-To enable persistent storage on Vercel:
+To enable persistent storage:
 
-1. Open the project in the Vercel dashboard
-2. Go to **Storage → Create Database → KV** (backed by Upstash Redis)
-3. Connect it to this project — Vercel injects `KV_REST_API_URL` and
-   `KV_REST_API_TOKEN` automatically
+1. Create a Redis database with any provider — Redis Cloud
+   ([redis.io](https://redis.io)), Upstash, or self-hosted all work, since
+   `ioredis` speaks the standard Redis protocol
+2. Copy its connection string (`redis://default:<password>@<host>:<port>`)
+3. Set it as `REDIS_URL` in the Vercel project's environment variables
+   (Settings → Environment Variables), for Production and Preview
 4. Redeploy
 
 No code changes are needed: [`lib/store.ts`](lib/store.ts) selects the Redis
-backend automatically whenever those variables are present.
+backend automatically whenever `REDIS_URL` is present.
 
 ## Design notes
 

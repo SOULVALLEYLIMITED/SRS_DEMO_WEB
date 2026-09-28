@@ -2,14 +2,10 @@ import type { TeacherReport } from "./types";
 
 // Vercel's (and most serverless platforms') filesystem is read-only outside
 // /tmp and isn't shared across function invocations, so the file-based store
-// only works for local development. When Vercel KV / Upstash Redis REST
-// credentials are present (set them in the Vercel dashboard under
-// Storage -> Create Database -> KV, which auto-injects KV_REST_API_URL /
-// KV_REST_API_TOKEN), reports persist there instead.
-const hasRedisConfig = Boolean(
-  (process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL) &&
-    (process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN)
-);
+// only works for local development. When REDIS_URL is set (any standard
+// Redis provider — Redis Cloud, Upstash, self-hosted, etc.), reports persist
+// there instead.
+const hasRedisConfig = Boolean(process.env.REDIS_URL);
 
 type Store = {
   getReports(): Promise<TeacherReport[]>;
