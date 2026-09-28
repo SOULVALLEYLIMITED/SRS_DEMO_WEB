@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft, Download } from "lucide-react";
 import { Header } from "@/app/components/Header";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { ResultTable } from "@/app/components/ResultTable";
@@ -26,9 +27,9 @@ export default async function ReportDetailPage({
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
         <Link
           href="/headmaster"
-          className="text-sm font-medium text-violet-600 hover:underline dark:text-violet-400"
+          className="inline-flex items-center gap-1 text-sm font-medium text-violet-600 hover:underline dark:text-violet-400"
         >
-          ← Back to dashboard
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to dashboard
         </Link>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -49,9 +50,9 @@ export default async function ReportDetailPage({
             <StatusBadge status={structured.status} />
             <a
               href={`/api/reports/${report.id}/document`}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
             >
-              ⬇ Download Word document
+              <Download className="h-4 w-4" /> Download Word document
             </a>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TriangleAlert } from "lucide-react";
 
 const STORAGE_KEY = "srs-demo-notice-seen";
 
@@ -38,7 +39,7 @@ export function DemoNoticeModal() {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm dark:bg-black/70">
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-center gap-2">
-          <span className="text-xl">⚠️</span>
+          <TriangleAlert className="h-5 w-5 text-amber-500" />
           <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
             This is a demo
           </h2>

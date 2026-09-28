@@ -54,8 +54,8 @@ export default async function HeadmasterPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <GenerateDemoButton count={1} label="✨ +1 demo report" />
-            <GenerateDemoButton count={5} label="✨ +5 demo reports" />
+            <GenerateDemoButton count={1} label="+1 demo report" />
+            <GenerateDemoButton count={5} label="+5 demo reports" />
             <Link
               href="/teacher"
               className="hidden rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 sm:block dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
@@ -75,7 +75,7 @@ export default async function HeadmasterPage() {
               >
                 Submit the first report
               </Link>
-              <GenerateDemoButton count={5} label="✨ Or generate 5 demo reports" />
+              <GenerateDemoButton count={5} label="Or generate 5 demo reports" />
             </div>
           </div>
         ) : (

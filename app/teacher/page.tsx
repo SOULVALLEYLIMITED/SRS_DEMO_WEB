@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type KeyboardEvent } from "react";
 import Link from "next/link";
+import { ArrowRight, ArrowUp, CheckCircle2, Download, Paperclip, X } from "lucide-react";
 import { Header } from "@/app/components/Header";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { ResultTable } from "@/app/components/ResultTable";
@@ -232,16 +233,16 @@ export default function TeacherPage() {
         <div className="mt-3 rounded-2xl border border-slate-300 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           {attachedFile && (
             <div className="mb-2 flex w-fit items-center gap-2 rounded-full bg-violet-50 px-3 py-1 text-xs text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-              📎 {attachedFile}
+              <Paperclip className="h-3.5 w-3.5" /> {attachedFile}
               <button
                 onClick={() => {
                   setAttachedFile(null);
                   setInput("");
                 }}
-                className="font-bold text-violet-400 hover:text-violet-700 dark:text-violet-500 dark:hover:text-violet-300"
+                className="text-violet-400 hover:text-violet-700 dark:text-violet-500 dark:hover:text-violet-300"
                 aria-label="Remove attachment"
               >
-                ×
+                <X className="h-3.5 w-3.5" />
               </button>
             </div>
           )}
@@ -256,7 +257,13 @@ export default function TeacherPage() {
           <div className="flex flex-wrap items-center justify-between gap-2 px-1 pt-1">
             <div className="flex flex-wrap items-center gap-2">
               <label className="flex cursor-pointer items-center gap-1 rounded-full border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
-                {extracting ? "Reading…" : "📎 Attach"}
+                {extracting ? (
+                  "Reading…"
+                ) : (
+                  <>
+                    <Paperclip className="h-3.5 w-3.5" /> Attach
+                  </>
+                )}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -283,7 +290,13 @@ export default function TeacherPage() {
                       : "border border-slate-200 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
                   }`}
                 >
-                  {generating ? "Generating…" : "✅ Generate Report"}
+                  {generating ? (
+                    "Generating…"
+                  ) : (
+                    <span className="inline-flex items-center gap-1">
+                      <CheckCircle2 className="h-3.5 w-3.5" /> Generate Report
+                    </span>
+                  )}
                 </button>
               )}
             </div>
@@ -293,7 +306,7 @@ export default function TeacherPage() {
               className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-600 text-white transition-colors hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Send"
             >
-              ↑
+              <ArrowUp className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -301,9 +314,9 @@ export default function TeacherPage() {
         <div className="mt-3 flex justify-end">
           <Link
             href="/headmaster"
-            className="text-xs font-medium text-violet-600 hover:underline dark:text-violet-400"
+            className="inline-flex items-center gap-1 text-xs font-medium text-violet-600 hover:underline dark:text-violet-400"
           >
-            View headmaster dashboard →
+            View headmaster dashboard <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
       </div>
@@ -326,7 +339,7 @@ function ChatBubble({
         <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-violet-600 px-4 py-2.5 text-sm text-white">
           {message.fileName && (
             <div className="mb-1 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-xs">
-              📎 {message.fileName}
+              <Paperclip className="h-3 w-3" /> {message.fileName}
             </div>
           )}
           <p className="whitespace-pre-wrap leading-6">{message.text}</p>
@@ -379,9 +392,15 @@ function ChatBubble({
             <button
               onClick={onGenerate}
               disabled={generating}
-              className="mt-3 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {generating ? "Generating…" : "✅ Generate Report"}
+              {generating ? (
+                "Generating…"
+              ) : (
+                <>
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Generate Report
+                </>
+              )}
             </button>
           )}
         </div>
@@ -409,9 +428,9 @@ function ChatBubble({
         </div>
         <a
           href={`/api/reports/${report.id}/document`}
-          className="mt-3 inline-block text-xs font-medium text-violet-600 hover:underline dark:text-violet-400"
+          className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-violet-600 hover:underline dark:text-violet-400"
         >
-          ⬇ Download as Word document
+          <Download className="h-3.5 w-3.5" /> Download as Word document
         </a>
       </div>
     </div>

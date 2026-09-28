@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, GraduationCap, School } from "lucide-react";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 export default function Home() {
@@ -39,15 +40,15 @@ export default function Home() {
             href="/teacher"
             className="group flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-violet-700"
           >
-            <span className="text-2xl">🧑‍🏫</span>
+            <GraduationCap className="h-7 w-7 text-violet-600 dark:text-violet-400" />
             <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               I&apos;m a Teacher
             </span>
             <span className="text-sm text-slate-500 dark:text-slate-400">
               Submit a normal lesson report &mdash; no technical knowledge needed.
             </span>
-            <span className="mt-2 text-sm font-medium text-violet-600 group-hover:underline dark:text-violet-400">
-              Submit a report →
+            <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-violet-600 group-hover:underline dark:text-violet-400">
+              Submit a report <ArrowRight className="h-3.5 w-3.5" />
             </span>
           </Link>
 
@@ -55,15 +56,15 @@ export default function Home() {
             href="/headmaster"
             className="group flex flex-col items-start gap-2 rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-violet-700"
           >
-            <span className="text-2xl">🏫</span>
+            <School className="h-7 w-7 text-violet-600 dark:text-violet-400" />
             <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               I&apos;m the Headmaster
             </span>
             <span className="text-sm text-slate-500 dark:text-slate-400">
               View structured, AI-summarized reports from every class.
             </span>
-            <span className="mt-2 text-sm font-medium text-violet-600 group-hover:underline dark:text-violet-400">
-              Open dashboard →
+            <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-violet-600 group-hover:underline dark:text-violet-400">
+              Open dashboard <ArrowRight className="h-3.5 w-3.5" />
             </span>
           </Link>
         </div>
