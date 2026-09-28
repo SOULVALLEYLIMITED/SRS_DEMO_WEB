@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { addReport, getReports } from "@/lib/store";
 import { structureReport } from "@/lib/ai";
-import type { NewReportInput, TeacherReport } from "@/lib/types";
+import { REPORT_TYPES, type NewReportInput, type TeacherReport } from "@/lib/types";
 
 export async function GET() {
   const reports = await getReports();
@@ -12,26 +12,26 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as Partial<NewReportInput>;
 
-  if (!body.className || !body.subject || !body.date || !body.reportText) {
-    return NextResponse.json(
-      { error: "className, subject, date, and reportText are required." },
-      { status: 400 }
-    );
+  if (!body.reportText?.trim()) {
+    return NextResponse.json({ error: "reportText is required." }, { status: 400 });
   }
 
   const input: NewReportInput = {
-    teacherName: body.teacherName?.trim() || "Unnamed Teacher",
-    className: body.className.trim(),
-    subject: body.subject.trim(),
-    date: body.date.trim(),
+    reportType: REPORT_TYPES.includes(body.reportType as (typeof REPORT_TYPES)[number])
+      ? (body.reportType as (typeof REPORT_TYPES)[number])
+      : "Lesson Report",
     reportText: body.reportText.trim(),
+    sourceFileName: body.sourceFileName?.trim() || undefined,
   };
 
-  const { structured, source } = await structureReport(input);
+  const { meta, structured, source } = await structureReport(input);
 
   const report: TeacherReport = {
     id: randomUUID(),
-    ...input,
+    reportType: input.reportType,
+    ...meta,
+    reportText: input.reportText,
+    sourceFileName: input.sourceFileName,
     submittedAt: new Date().toISOString(),
     structured,
     source,

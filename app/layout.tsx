@@ -1,28 +1,35 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const poppins = localFont({
+  variable: "--font-poppins",
+  display: "swap",
+  src: [
+    { path: "../fonts/poppins/Poppins-Regular.ttf", weight: "400", style: "normal" },
+    { path: "../fonts/poppins/Poppins-Medium.ttf", weight: "500", style: "normal" },
+    { path: "../fonts/poppins/Poppins-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "../fonts/poppins/Poppins-Bold.ttf", weight: "700", style: "normal" },
+  ],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const orbitron = localFont({
+  variable: "--font-orbitron",
+  display: "swap",
+  src: "../fonts/orbitron/Orbitron-VariableFont_wght.ttf",
 });
 
 export const metadata: Metadata = {
-  title: "Soul Valley | School Workflow Demo",
+  title: "SRS | School Report System",
   description:
-    "A demonstration of how Soul Valley transforms a teacher's report into structured information for school leadership.",
+    "Soul Valley's SRS (School Report System) demo — turning a teacher's report into structured information for school leadership.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${orbitron.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
         {children}
