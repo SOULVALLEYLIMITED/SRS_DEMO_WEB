@@ -16,7 +16,10 @@ function getClient(): Redis {
 
   // Reused across invocations on a warm serverless instance instead of
   // reconnecting on every request.
-  client ??= new Redis(url, { maxRetriesPerRequest: 3 });
+  if (!client) {
+    client = new Redis(url, { maxRetriesPerRequest: 3 });
+    client.on("error", (err) => console.error("Redis client error:", err.message));
+  }
   return client;
 }
 

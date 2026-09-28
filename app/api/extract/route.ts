@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { extractTextFromFile, ExtractionError } from "@/lib/extractText";
+import { enforceRateLimit } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
+  const rateLimited = await enforceRateLimit(req, "extract");
+  if (rateLimited) return rateLimited;
+
   const form = await req.formData();
   const file = form.get("file");
 

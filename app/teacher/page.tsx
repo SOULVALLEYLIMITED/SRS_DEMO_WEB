@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/app/components/Header";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { ResultTable } from "@/app/components/ResultTable";
+import { DemoNoticeModal } from "@/app/components/DemoNoticeModal";
 import { REPORT_TYPES, type ReportType, type ResultTable as ResultTableType, type TeacherReport } from "@/lib/types";
 
 const EXAMPLE_TEXT =
@@ -198,6 +199,7 @@ export default function TeacherPage() {
 
   return (
     <div className="flex flex-1 flex-col dark:bg-slate-950">
+      <DemoNoticeModal />
       <Header active="teacher" />
 
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-6">

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { addReport, getReports } from "@/lib/store";
 import { structureReport } from "@/lib/ai";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { REPORT_TYPES, type NewReportInput, type TeacherReport } from "@/lib/types";
 
 export async function GET() {
@@ -10,6 +11,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const rateLimited = await enforceRateLimit(req, "reports");
+  if (rateLimited) return rateLimited;
+
   const body = (await req.json()) as Partial<NewReportInput>;
 
   if (!body.reportText?.trim()) {
